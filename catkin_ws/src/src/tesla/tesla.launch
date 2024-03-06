@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="tesla" type="listener" name="Subscriber">
+    </node>
+    <node pkg="tesla" type="talker" name="Publisher">
+    </node>
+</launch>
