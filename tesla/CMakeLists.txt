@@ -109,7 +109,6 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES tesla
   CATKIN_DEPENDS roscpp std_msgs
-  DEPENDS system_lib
 )
 
 ###########
