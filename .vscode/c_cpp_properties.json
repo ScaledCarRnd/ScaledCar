@@ -3,6 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
+                "${workspaceFolder}/../devel/include",
                 "${workspaceFolder}/**",
                 "/opt/ros/melodic/include"
             ],

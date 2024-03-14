@@ -52,6 +52,7 @@ find_package(catkin REQUIRED COMPONENTS
    msg
    FILES
    Num.msg
+   obstacleData.msg
  )
 
 # Generate services in the 'srv' folder

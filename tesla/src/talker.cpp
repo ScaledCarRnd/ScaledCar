@@ -1,5 +1,8 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "tesla/obstacleData.h"
+
+#define TICKS_PER_SECOND 5
 
 int main(int argc, char **argv)
 {
@@ -39,9 +42,10 @@ int main(int argc, char **argv)
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+  ros::Publisher chatter_pub = n.advertise<tesla::obstacleData>("chatter", 1000);
+  //ros::Publisher obstacle_pub = n.advertise<Tesla::ObstacleData>("obstacles", 10, true);
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(TICKS_PER_SECOND);
 
   /**
    * A count of how many messages we have sent. This is used to create
@@ -54,6 +58,11 @@ int main(int argc, char **argv)
      * This is a message object. You stuff it with data, and then publish it.
      */
     std_msgs::String msg;
+    // Tesla::ObstacleData obData;
+    // obData.str = "An Obstacle";
+    // obData.x = count;
+    // obData.y = 15;
+    // obData.z = -5;
 
     std::stringstream ss;
     ss << "hello world " << count;
@@ -68,6 +77,9 @@ int main(int argc, char **argv)
      * in the constructor above.
      */
     chatter_pub.publish(msg);
+
+    // Publish an obstacle
+    // obstacle_pub.publish(obData);
 
     ros::spinOnce();
 
