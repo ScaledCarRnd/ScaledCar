@@ -6,7 +6,7 @@ from actionlib_msgs.msg import GoalID
 from visualization_msgs.msg import Marker
 from visualization_msgs.msg import MarkerArray
 from geometry_msgs.msg import PointStamped, PoseStamped, PoseWithCovarianceStamped
-from std_msgs.msg import String
+from tesla.msg import obstacleData
 
 
 class Multipoint_navigation:
@@ -40,8 +40,10 @@ class Multipoint_navigation:
         self.pub_rtabinitPose = rospy.Publisher("/rtabmap/initialpose", PoseWithCovarianceStamped, queue_size=10)
 
 
-        # My Stuff
-        self.sub_obstacle = rospy.Subscriber("chatter", String, self.obstacle_callback)
+        ##############################
+        # Subscribe to custom topic  #
+        ##############################
+        self.sub_obstacle = rospy.Subscriber("obstacles", obstacleData, self.obstacle_callback)
 
         rate = rospy.Rate(10) # 10hz
         print('about to enter main loop')
@@ -49,10 +51,19 @@ class Multipoint_navigation:
             # Publish markerArray
             self.pub_mark.publish(self.markerArray)
             rate.sleep()
-        
+    
+    # Obstacle Callback
+    # New obstacle information has been published, decide what to do
+    #=======================================================================
     def obstacle_callback(self, msg):
+        
         print('Obstacle callback')
-        rospy.loginfo(rospy.get_caller_id() + ": I heard %s", msg.data)
+        rospy.loginfo(rospy.get_caller_id() + ": Obstacle Data Recieved!")
+        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.id)
+        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.x)
+        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.y)
+        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.z)
+    #=======================================================================
 
     def cancel(self):
         self.pub_cancelgoal.publish(GoalID())
