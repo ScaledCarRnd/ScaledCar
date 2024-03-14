@@ -12,7 +12,7 @@ from std_msgs.msg import String
 class Multipoint_navigation:
     def __init__(self):
         # Initialize node
-        rospy.init_node('MultiPoint_navigation')
+        rospy.init_node('Mod_navigation')
         rospy.on_shutdown(self.cancel)
         
         # Target point marker array
@@ -44,13 +44,15 @@ class Multipoint_navigation:
         self.sub_obstacle = rospy.Subscriber("chatter", String, self.obstacle_callback)
 
         rate = rospy.Rate(10) # 10hz
+        print('about to enter main loop')
         while not rospy.is_shutdown():
             # Publish markerArray
             self.pub_mark.publish(self.markerArray)
             rate.sleep()
         
     def obstacle_callback(self, msg):
-        rospy.loginfo(rospy.get_caller_id() + "I heard %s", msg.data)
+        print('Obstacle callback')
+        rospy.loginfo(rospy.get_caller_id() + ": I heard %s", msg.data)
 
     def cancel(self):
         self.pub_cancelgoal.publish(GoalID())
