@@ -59,10 +59,11 @@ class Multipoint_navigation:
         
         print('Obstacle callback')
         rospy.loginfo(rospy.get_caller_id() + ": Obstacle Data Recieved!")
-        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.id)
-        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.x)
-        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.y)
-        rospy.loginfo(rospy.get_caller_id() + ": Data: %d", msg.z)
+        rospy.loginfo(rospy.get_caller_id() + ": String Data: %s", msg.strData)
+        rospy.loginfo(rospy.get_caller_id() + ": ID: %d", msg.id)
+        rospy.loginfo(rospy.get_caller_id() + ": X: %d", msg.x)
+        rospy.loginfo(rospy.get_caller_id() + ": Y: %d", msg.y)
+        rospy.loginfo(rospy.get_caller_id() + ": Z: %d", msg.z)
     #=======================================================================
 
     def cancel(self):
