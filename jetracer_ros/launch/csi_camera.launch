@@ -7,7 +7,7 @@
   <arg name="sync_sink" default="false" />                    <!-- Synchronize the app sink. Setting this to false may resolve problems with sub-par framerates. -->
   <arg name="width" default="640" />                         <!-- Image Width to stream -->
   <arg name="height" default="480" />                        <!-- Image Height to stream -->
-  <arg name="fps" default="20" />                            <!-- Desired framerate. True framerate may not reach this if set too high. -->
+  <arg name="fps" default="30" />                            <!-- Desired framerate. True framerate may not reach this if set too high. -->
   <arg name="flip_method" default="0" />                     <!-- flip_method -->
   <arg name="load_camera_info" default="true" />             <!-- Load the camera info or not-->
   <arg name="camera_info_url" default="file://$(find jetracer)/config/camera_calibration/cam_640x480.yaml" />
