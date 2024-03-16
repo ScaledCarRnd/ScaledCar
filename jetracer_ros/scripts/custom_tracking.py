@@ -7,6 +7,7 @@ import numpy as np
 from std_msgs.msg import String
 from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
+from tesla.msg import obstacleData
 
 class image_converter:
 
@@ -18,6 +19,12 @@ class image_converter:
     self.bridge = CvBridge()
     self.image_sub = rospy.Subscriber(self.camera_name+"/image_raw/compressed",CompressedImage,self.callback)
     self.image_pub = rospy.Publisher(self.topic_name+"/compressed",CompressedImage,queue_size=10)
+
+    #Corey Edit
+    #===============================
+    print("Setting up publisher for obstacles")
+    self.obstacle_pub = rospy.Publisher("obstacles", obstacleData, queue_size=10)
+    #===============================
 
 def callback(self,data):
     try:
@@ -41,8 +48,30 @@ def callback(self,data):
       print(e)
 
 def main(args):
+  print("Initializeing node")
   rospy.init_node('image_converter', anonymous=True)
+  print("Done!")
   ic = image_converter()
+
+  #Corey Edit
+  #===============================
+  i = 1
+  rate =  rospy.Rate(1) # 1hz
+  while(i < 4):
+    rate.sleep()
+    message = obstacleData()
+    message.id = i
+    message.strData = "Camera script message"
+    message.x = 209
+    message.y = 209
+    message.z = 0
+
+
+    print("Publishing a message")
+    ic.obstacle_pub.publish(message)
+    i += 1
+  #===============================
+
   try:
     rospy.spin()
   except KeyboardInterrupt:
