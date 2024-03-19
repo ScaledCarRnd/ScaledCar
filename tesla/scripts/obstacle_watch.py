@@ -25,8 +25,8 @@ class Obstacle_watch:
         self.costmap_msg.info.resolution = 0.1  # Set the resolution in meters
         self.costmap_msg.info.width = 100  # Set the width of the costmap (number of cells)
         self.costmap_msg.info.height = 100  # Set the height of the costmap (number of cells)
-        self.costmap_msg.info.origin.position.x = 0  # Set the origin of the costmap
-        self.costmap_msg.info.origin.position.y = 0
+        self.costmap_msg.info.origin.position.x = -5  # Set the origin of the costmap
+        self.costmap_msg.info.origin.position.y = -5
         self.costmap_msg.info.origin.position.z = 0
 
         # Initialize the occupancy grid data (all cells are free)
@@ -38,8 +38,8 @@ class Obstacle_watch:
                 index = y * self.costmap_msg.info.width + x
                 self.costmap_msg.data[index] = 100  # Set occupancy value to 100 for occupied
 
-        for i in range(len(self.costmap_msg.data)):
-            self.costmap_msg.data[i] = random.randint(0, 100)
+        self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
+        self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
 
         # Set destructer
         rospy.on_shutdown(self.cancel)
@@ -47,8 +47,7 @@ class Obstacle_watch:
         # Main Loop
         rate = rospy.Rate(1) # 1hz
         while not rospy.is_shutdown():
-            self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
-            self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
+            
             rate.sleep()
 
     # Destructor
@@ -60,6 +59,14 @@ class Obstacle_watch:
         self.modified_costmap = costmap
 
     def obstacle_callback(self, msg):
+        #test
+        ##########################################
+        for i in range(len(self.costmap_msg.data)):
+            self.costmap_msg.data[i] = random.randint(0, 100)
+        self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
+        self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
+        ##########################################
+
         print('Obstacle callback')
         rospy.loginfo(rospy.get_caller_id() + ": Obstacle Data Recieved!")
         rospy.loginfo(rospy.get_caller_id() + ": String Data: %s", msg.strData)
