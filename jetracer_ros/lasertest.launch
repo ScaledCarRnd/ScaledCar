@@ -1,0 +1,16 @@
+<launch>
+  <!-- Launch the laser assembler node -->
+  <node name="laser_assembler" pkg="laser_assembler" type="laser_scan_assembler" output="screen">
+    <!-- Set the desired output topic for assembled point clouds -->
+    <param name="output_frame" type="string" value="base_link"/>
+    <param name="fixed_frame" type="string" value="base_link"/>
+  </node>
+
+  <!-- Publish fake laser scan data -->
+  <node name="fake_laser_publisher" pkg="laser_assembler" type="point_cloud_assembler" output="screen">
+    <!-- Set the desired frequency for publishing fake laser scans (e.g., 1 Hz) -->
+    <param name="frequency" type="double" value="1.0"/>
+    <param name="fixed_frame" type="string" value="base_link"/>
+  </node>
+</launch>
+
