@@ -25,15 +25,14 @@ class Obstacle_watch:
         self.costmap_msg.info.resolution = 0.1  # Set the resolution in meters
         self.costmap_msg.info.width = 100  # Set the width of the costmap (number of cells)
         self.costmap_msg.info.height = 100  # Set the height of the costmap (number of cells)
-        self.costmap_msg.info.origin.position.x = -5.0  # Set the origin of the costmap
-        self.costmap_msg.info.origin.position.y = -5.0
-        self.costmap_msg.info.origin.position.z = 0.0
+        self.costmap_msg.info.origin.position.x = 0  # Set the origin of the costmap
+        self.costmap_msg.info.origin.position.y = 0
+        self.costmap_msg.info.origin.position.z = 0
 
         # Initialize the occupancy grid data (all cells are free)
         self.costmap_msg.data = [0] * (self.costmap_msg.info.width * self.costmap_msg.info.height)
 
         # Add some obstacles (for testing purposes)
-        # For example, mark a square region in the center of the costmap as occupied
         for y in range(40, 60):  # Rows
             for x in range(40, 60):  # Columns
                 index = y * self.costmap_msg.info.width + x
@@ -80,10 +79,10 @@ class Obstacle_watch:
             self.update_costmap(obstacle_position)
         rospy.loginfo(rospy.get_caller_id() + " Updated self costmap with obstacle data")
 
+    # Calculate grid coordinates of obstacle position
+    # Update occupancy values in costmap to mark cells as occupied
+    # Modify self.modified_costmap, and publish
     def update_costmap(self, obstacle_position):
-        # Calculate grid coordinates of obstacle position
-        # Update occupancy values in costmap to mark cells as occupied
-        # Modify self.modified_costmap accordingly
         
         grid_x = int((obstacle_position.x - self.modified_costmap.info.origin.position.x) / self.modified_costmap.info.resolution)
         grid_y = int((obstacle_position.y - self.modified_costmap.info.origin.position.y) / self.modified_costmap.info.resolution)
