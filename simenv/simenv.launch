@@ -1,0 +1,17 @@
+<launch>
+  <arg name="basic" value="$(find simenv)/worlds/basic.world"/>
+  <arg name="jetracer" value="$(find simenv)/urdf/jetracer.urdf"/>
+
+  <!-- Launch Gazebo with the specified world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg basic)"/>
+  </include>
+
+  <!-- Load the URDF model description into the parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(arg jetracer)'"/>
+
+  <!-- Spawn the URDF model -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+    args="-urdf -model my_robot -param robot_description -x 0 -y 0 -z 1"/>
+</launch>
+

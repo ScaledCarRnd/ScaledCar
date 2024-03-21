@@ -1,0 +1,7 @@
+<launch>
+
+<node pkg="fake_laser" type="fake_laser_publisher" name="fake_laser_publisher"    output="screen"></node>
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find fake_laser)/rviz/fake_laser.rviz"/>
+<node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0.235 0 0.288 -3.142 0 0 /base_link    /base_laser 100" />
+
+</launch>
