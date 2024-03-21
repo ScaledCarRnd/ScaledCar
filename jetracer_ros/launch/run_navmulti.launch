@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Inlcude nav.launch -->
+	<include file="$(find jetracer)/launch/nav.launch"/>
+
+	<!-- Inlcude view_nav.launch -->
+	<include file="$(find jetracer)/launch/view_nav.launch"/>
+
+	<!-- Inlcude multipoint_nav.py -->
+	<node name="multipoint_nav" pkg="jetracer" type="multipoint_nav.py" output="screen"/>
+</launch>
+
