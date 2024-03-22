@@ -14,9 +14,9 @@ class Obstacle_watch:
         print('Obstacle_watch node is online')
 
         self.costmap_sub = rospy.Subscriber('/move_base/local_costmap/costmap', OccupancyGrid, self.costmap_callback)
-        self.costmap_pub = rospy.Publisher('/modified_costmap', OccupancyGrid, queue_size=10)
+        #self.costmap_pub = rospy.Publisher('/modified_costmap', OccupancyGrid, queue_size=10)
         self.sub_obstacle = rospy.Subscriber("obstacles", obstacleData, self.obstacle_callback)
-        self.costmap_pub = rospy.Publisher('/custom_costmap', OccupancyGrid, queue_size=10)
+        self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
         self.modified_costmap = None
         # own costmap
         self.costmap_msg = OccupancyGrid()
@@ -31,13 +31,6 @@ class Obstacle_watch:
 
         # Initialize the occupancy grid data (all cells are free)
         self.costmap_msg.data = [0] * (self.costmap_msg.info.width * self.costmap_msg.info.height)
-
-        # Add some obstacles (for testing purposes)
-        for y in range(40, 60):  # Rows
-            for x in range(40, 60):  # Columns
-                index = y * self.costmap_msg.info.width + x
-                self.costmap_msg.data[index] = 100  # Set occupancy value to 100 for occupied
-
         self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
 
@@ -61,8 +54,10 @@ class Obstacle_watch:
     def obstacle_callback(self, msg):
         #test
         ##########################################
-        for i in range(len(self.costmap_msg.data)):
-            self.costmap_msg.data[i] = random.randint(0, 100)
+        for y in range(30, 70):  # Rows
+            for x in range(30, 40):  # Columns
+                index = y * self.costmap_msg.info.width + x
+                self.costmap_msg.data[index] = random.randint(0, 100)
         self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
         ##########################################
