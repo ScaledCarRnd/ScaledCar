@@ -13,11 +13,13 @@ class Obstacle_watch:
         rospy.init_node('Obstacle_watch')
         print('Obstacle_watch node is online')
 
-        self.costmap_sub = rospy.Subscriber('/move_base/local_costmap/costmap', OccupancyGrid, self.costmap_callback)
+        self.costmap_sub = rospy.Subscriber('/move_base/local_costmap/costmap', OccupancyGrid, self.local_costmap_callback)
         #self.costmap_pub = rospy.Publisher('/modified_costmap', OccupancyGrid, queue_size=10)
         self.sub_obstacle = rospy.Subscriber("obstacles", obstacleData, self.obstacle_callback)
         self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
+        
         self.modified_costmap = None
+        
         # own costmap
         self.costmap_msg = OccupancyGrid()
         self.costmap_msg.header.stamp = rospy.Time.now()
@@ -47,9 +49,12 @@ class Obstacle_watch:
     def cancel(self):
         print('Closing Node')
 
-    def costmap_callback(self, costmap):
+    def local_costmap_callback(self, local_costmap):
         # Store received costmap
-        self.modified_costmap = costmap
+        self.modified_costmap = local_costmap
+        # Update the origin of the costmap based on the local costmap's origin
+        # This will translate the whole map as the robot moves 
+        self.costmap_msg.info.origin = local_costmap.info.origin
 
     def obstacle_callback(self, msg):
         #test

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- This launch file is a simulated test, and does not have move_base transforming the robots origin -->
+
+    <node pkg="tesla" type="obstacle_watch.py" name="obstacle_watch"/>
+
+    <!-- This provides a local translation for the test, as move_base is not active -->
+    <!-- Normally, move_base will come with a translation for /map automatically -->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link_broadcaster" args="0 0 0 0 0 0 /map /base_link 100" />
+    
+    <node pkg="tesla" type="listener" name="Subscriber"/>
+    <node pkg="tesla" type="talker" name="Publisher"  output="screen"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tesla)/rviz/simtest.rviz"/>
+
+    <node pkg="fake_laser" type="fake_laser_publisher" name="fake_laser_publisher"    output="screen"></node>
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0.235 0 0.288 -3.142 0 0 /base_link    /base_laser 100" />
+
+</launch>
+   
