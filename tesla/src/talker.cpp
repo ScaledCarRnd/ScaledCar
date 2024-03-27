@@ -78,9 +78,9 @@ int main(int argc, char **argv)
     {
       tesla::obstacleData obData;
       obData.strData = "An Obstacle";
-      obData.x = count;
-      obData.y = 15;
-      obData.z = -5;
+      obData.x = 0;
+      obData.y = 100;
+      obData.z = 0;
 
       // Publish an obstacle
       obstacle_pub.publish(obData);

@@ -2,7 +2,7 @@
 <launch>
     <!-- This launch file is a simulated test, and does not have move_base transforming the robots origin -->
 
-    <node pkg="tesla" type="obstacle_watch.py" name="obstacle_watch"/>
+    <node pkg="tesla" type="obstacle_watch.py" name="obstacle_watch" output="screen"/>
 
     <!-- This provides a local translation for the test, as move_base is not active -->
     <!-- Normally, move_base will come with a translation for /map automatically -->
