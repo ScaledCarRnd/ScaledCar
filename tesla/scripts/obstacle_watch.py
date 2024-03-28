@@ -94,8 +94,8 @@ class Obstacle_watch:
         obstacle_w = 10
         obstacle_h = 6
 
-        for y in range(obstacle_y - obstacle_w / 2, obstacle_y + obstacle_w / 2):
-            for x in range(obstacle_x - obstacle_h / 2, obstacle_x + obstacle_h / 2):
+        for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
+            for x in range(obstacle_x - obstacle_w / 2, obstacle_x + obstacle_w / 2):
                 rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
                 if 0 <= x < self.costmap_msg.info.width and 0 <= y < self.costmap_msg.info.height:
                     index = y * self.costmap_msg.info.width + x

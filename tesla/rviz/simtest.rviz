@@ -58,8 +58,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 3.9971506595611572
-        Min Value: -3.9990572929382324
+        Max Value: 3.9978978633880615
+        Min Value: -3.995382070541382
         Value: true
       Axis: Y
       Channel Name: intensity
@@ -101,15 +101,18 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
+        map:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          base_laser:
-            {}
+        map:
+          base_link:
+            base_laser:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
@@ -150,16 +153,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 17.135663986206055
+      Distance: 4.94364070892334
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.25632500648498535
-        Y: -0.11699900031089783
-        Z: 0.46676498651504517
+        X: 0.262487530708313
+        Y: -0.11702725291252136
+        Z: -9.1552734375e-5
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -168,7 +171,7 @@ Visualization Manager:
       Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.278600692749023
+      Yaw: 4.710000038146973
     Saved: ~
 Window Geometry:
   Displays:
@@ -186,5 +189,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1536
-  X: 0
-  Y: 23
+  X: 8
+  Y: 31
