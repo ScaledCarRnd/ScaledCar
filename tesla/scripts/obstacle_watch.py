@@ -50,7 +50,7 @@ class Obstacle_watch:
         rospy.on_shutdown(self.cancel)
 
         # Main Loop
-        rate = rospy.Rate(1) # 1hz
+        rate = rospy.Rate(10) # 1hz
         while not rospy.is_shutdown():
             
             rate.sleep()

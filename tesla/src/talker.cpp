@@ -59,11 +59,11 @@ int main(int argc, char **argv)
      */
     std_msgs::String msg;
 
-    std::stringstream ss;
-    ss << "hello world " << count;
-    msg.data = ss.str();
+    // std::stringstream ss;
+    // ss << "hello world " << count;
+    // msg.data = ss.str();
 
-    ROS_INFO("%s", msg.data.c_str());
+    // ROS_INFO("%s", msg.data.c_str());
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
     chatter_pub.publish(msg);
     
     // Simulate occasional obstacles
-    if(count % 5 == 0)
+    // if(count % 5 == 0)
     {
       tesla::obstacleData obData;
       obData.strData = "An Obstacle";
