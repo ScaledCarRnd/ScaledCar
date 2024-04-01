@@ -2,6 +2,8 @@
 # encoding: utf-8
 import math
 import random
+import numpy as np
+from scipy.ndimage import rotate
 import rospy
 from tf.transformations import euler_from_quaternion
 from nav_msgs.msg import OccupancyGrid
@@ -104,12 +106,6 @@ class Obstacle_watch:
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
         rospy.loginfo(rospy.get_caller_id() + "Original values--> X: %f Y: %f" , obstacle_x, obstacle_y)
         
-        rospy.loginfo(rospy.get_caller_id() + "Yaw -->%f" ,yawRadians)
-        rotated_x = float(obstacle_x * math.cos(yawRadians) - obstacle_y * math.sin(yawRadians))
-        rotated_y = float(obstacle_x * math.sin(yawRadians) + obstacle_y * math.cos(yawRadians))
-        rospy.loginfo(rospy.get_caller_id() + "Rotated values--> X: %f Y: %f" , rotated_x, rotated_y)
-        obstacle_x = rotated_x
-        obstacle_y = rotated_y
 
         # Subtract the origin of the costmap from the obstacle position, normalize for grid offset
         obstacle_x = obstacle_x - self.costmap_msg.info.origin.position.x
@@ -141,38 +137,26 @@ class Obstacle_watch:
                     index = y * self.costmap_msg.info.width + x
                     self.costmap_msg.data[index] = 100  # Set occupancy value to 100 for occupied cells
 
+        # Rotation
+        # Convert the costmap data to a numpy array for easier manipulation
+        costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
+        # Calculate the rotation angle in degrees from the yaw angle
+        rotation_angle_degrees = math.degrees(yawRadians)
 
-        # obstacle_x = int(x * self.costmap_msg.info.resolution + self.costmap_msg.info.origin_x)
-        # obstacle_y = int(y * self.costmap_msg.info.resolution + self.costmap_msg.info.origin_y)
-        # #test
-        # ##########################################
-        # for y in range(30, 70):  # Rows
-        #     for x in range(30, 40):  # Columns
-        #         index = y * self.costmap_msg.info.width + x
-        #         self.costmap_msg.data[index] = random.randint(0, 100)
+        # Rotate the entire costmap array
+        rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
+
+        # Flatten the rotated costmap array back to a 1D list
+        rotated_costmap_data = rotated_costmap_array.flatten().tolist()
+
+        # Update the costmap message data
+        self.costmap_msg.data = rotated_costmap_data    
+
         self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
         print('Done.')
-        ##########################################
 
-        # rospy.loginfo(rospy.get_caller_id() + ": Obstacle Data Recieved!")
-        # rospy.loginfo(rospy.get_caller_id() + ": String Data: %s", msg.strData)
-        # rospy.loginfo(rospy.get_caller_id() + ": ID: %d", msg.id)
-        # rospy.loginfo(rospy.get_caller_id() + ": X: %d", msg.x)
-        # rospy.loginfo(rospy.get_caller_id() + ": Y: %d", msg.y)
-        # rospy.loginfo(rospy.get_caller_id() + ": Z: %d", msg.z)
-
-        # # Extract obstacle position from message
-        # obstacle_position = Point()
-        # obstacle_position.x = msg.x
-        # obstacle_position.y = msg.y
-        # obstacle_position.z = msg.z
-
-        # Update modified costmap
-        # if self.modified_costmap is not None:
-        #     self.update_costmap(obstacle_position)
-        # rospy.loginfo(rospy.get_caller_id() + " Updated self costmap with obstacle data")
 
     # Calculate grid coordinates of obstacle position
     # Update occupancy values in costmap to mark cells as occupied

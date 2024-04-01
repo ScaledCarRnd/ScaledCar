@@ -8,6 +8,7 @@ setup(
     install_requires=[
         'numpy', 
         'rospy',
+        'scipy',
     ],
     author='Corey Knight',
     keywords='ROS',
