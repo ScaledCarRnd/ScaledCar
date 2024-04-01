@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
+import math
 import random
 import rospy
+from tf.transformations import euler_from_quaternion
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
 from tesla.msg import obstacleData
@@ -15,7 +17,7 @@ class Obstacle_watch:
 
         self.costmap_sub = rospy.Subscriber('/move_base/local_costmap/costmap', OccupancyGrid, self.local_costmap_callback)
         #self.costmap_pub = rospy.Publisher('/modified_costmap', OccupancyGrid, queue_size=10)
-        self.sub_obstacle = rospy.Subscriber("obstacles", obstacleData, self.obstacle_callback)
+        self.sub_obstacle = rospy.Subscriber("our_obstacles", obstacleData, self.obstacle_callback)
         self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
         
         self.modified_costmap = None
@@ -26,6 +28,7 @@ class Obstacle_watch:
         self.transform_offset.x = -5
         self.transform_offset.y = -5
         self.transform_offset.z = 0
+        self.transform_offset_yaw = 0
         self.costmap_msg = OccupancyGrid()
         self.costmap_msg.header.stamp = rospy.Time.now()
         self.costmap_msg.header.frame_id = 'map'  # Set the frame ID
@@ -50,7 +53,7 @@ class Obstacle_watch:
         rospy.on_shutdown(self.cancel)
 
         # Main Loop
-        rate = rospy.Rate(10) # 1hz
+        rate = rospy.Rate(1) # hz
         while not rospy.is_shutdown():
             
             rate.sleep()
@@ -67,9 +70,23 @@ class Obstacle_watch:
         self.costmap_msg.info.origin = local_costmap.info.origin
         rospy.loginfo(rospy.get_caller_id() + "Updated Costmap Origin--> X: %d Y: %d", 
                       self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
+        
+        # Extract rotation from the local costmap's orientation
+        quaternion = (
+            local_costmap.info.origin.orientation.x,
+            local_costmap.info.origin.orientation.y,
+            local_costmap.info.origin.orientation.z,
+            local_costmap.info.origin.orientation.w
+        )
+        _, _, yaw = euler_from_quaternion(quaternion)
+        self.transform_offset_yaw = yaw
 
 
     def obstacle_callback(self, msg):
+        print('Obstacle callback')
+        #reset array
+        self.costmap_msg.data = [0] * len(self.costmap_msg.data)
+
         #get the obstacle location in centimetres, change to metres
         obstacle_x = msg.x / 100.0
         obstacle_y = msg.y / 100.0
@@ -88,15 +105,26 @@ class Obstacle_watch:
         obstacle_y = int(obstacle_y / self.map_world_size * self.map_size)
         rospy.loginfo(rospy.get_caller_id() + "Indexed --> X: %d Y: %d" , obstacle_x, obstacle_y)
 
-        rospy.loginfo(rospy.get_caller_id() + "Transformed values--> X: %d Y: %d" , obstacle_x, obstacle_y)
+        # Apply rotation to the obstacle position
+        rotated_x =(int) (obstacle_x * math.cos(self.transform_offset_yaw) - obstacle_y * math.sin(self.transform_offset_yaw))
+        rotated_y =(int) (obstacle_x * math.sin(self.transform_offset_yaw) + obstacle_y * math.cos(self.transform_offset_yaw))
+        rospy.loginfo(rospy.get_caller_id() + "Transformed values--> X: %d Y: %d" , rotated_x, rotated_y)
+
+        #test
+        #------------------
+        self.transform_offset_yaw += 1
+        if(self.transform_offset_yaw > 360):
+            self.transform_offset_yaw = 0
+        #------------------
+        rospy.loginfo(rospy.get_caller_id() + "Yaw -->%d" , self.transform_offset_yaw)
 
         #Fake dimensions
         obstacle_w = 10
         obstacle_h = 6
 
-        for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
-            for x in range(obstacle_x - obstacle_w / 2, obstacle_x + obstacle_w / 2):
-                rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
+        for y in range(rotated_y - obstacle_h / 2, rotated_y + obstacle_h / 2):
+            for x in range(rotated_x - obstacle_w / 2, rotated_x + obstacle_w / 2):
+                #rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
                 if 0 <= x < self.costmap_msg.info.width and 0 <= y < self.costmap_msg.info.height:
                     index = y * self.costmap_msg.info.width + x
                     self.costmap_msg.data[index] = 100  # Set occupancy value to 100 for occupied cells
@@ -113,21 +141,21 @@ class Obstacle_watch:
         #         self.costmap_msg.data[index] = random.randint(0, 100)
         self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
+        print('Done.')
         ##########################################
 
-        print('Obstacle callback')
-        rospy.loginfo(rospy.get_caller_id() + ": Obstacle Data Recieved!")
-        rospy.loginfo(rospy.get_caller_id() + ": String Data: %s", msg.strData)
-        rospy.loginfo(rospy.get_caller_id() + ": ID: %d", msg.id)
-        rospy.loginfo(rospy.get_caller_id() + ": X: %d", msg.x)
-        rospy.loginfo(rospy.get_caller_id() + ": Y: %d", msg.y)
-        rospy.loginfo(rospy.get_caller_id() + ": Z: %d", msg.z)
+        # rospy.loginfo(rospy.get_caller_id() + ": Obstacle Data Recieved!")
+        # rospy.loginfo(rospy.get_caller_id() + ": String Data: %s", msg.strData)
+        # rospy.loginfo(rospy.get_caller_id() + ": ID: %d", msg.id)
+        # rospy.loginfo(rospy.get_caller_id() + ": X: %d", msg.x)
+        # rospy.loginfo(rospy.get_caller_id() + ": Y: %d", msg.y)
+        # rospy.loginfo(rospy.get_caller_id() + ": Z: %d", msg.z)
 
-        # Extract obstacle position from message
-        obstacle_position = Point()
-        obstacle_position.x = msg.x
-        obstacle_position.y = msg.y
-        obstacle_position.z = msg.z
+        # # Extract obstacle position from message
+        # obstacle_position = Point()
+        # obstacle_position.x = msg.x
+        # obstacle_position.y = msg.y
+        # obstacle_position.z = msg.z
 
         # Update modified costmap
         # if self.modified_costmap is not None:
