@@ -28,7 +28,7 @@ class Obstacle_watch:
         self.transform_offset.x = -5
         self.transform_offset.y = -5
         self.transform_offset.z = 0
-        self.transform_offset_yaw = 0
+        self.transform_offset_yaw = -1
         self.costmap_msg = OccupancyGrid()
         self.costmap_msg.header.stamp = rospy.Time.now()
         self.costmap_msg.header.frame_id = 'map'  # Set the frame ID
@@ -87,6 +87,15 @@ class Obstacle_watch:
         #reset array
         self.costmap_msg.data = [0] * len(self.costmap_msg.data)
 
+        #test
+        #------------------
+        #rotate about the origin
+        self.transform_offset_yaw += 10
+        if(self.transform_offset_yaw > 360):
+            self.transform_offset_yaw = 0
+        yawRadians = math.radians(self.transform_offset_yaw)
+        #------------------
+
         #get the obstacle location in centimetres, change to metres
         obstacle_x = msg.x / 100.0
         obstacle_y = msg.y / 100.0
@@ -95,35 +104,38 @@ class Obstacle_watch:
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
         rospy.loginfo(rospy.get_caller_id() + "Original values--> X: %f Y: %f" , obstacle_x, obstacle_y)
         
+        rospy.loginfo(rospy.get_caller_id() + "Yaw -->%f" ,yawRadians)
+        rotated_x = float(obstacle_x * math.cos(yawRadians) - obstacle_y * math.sin(yawRadians))
+        rotated_y = float(obstacle_x * math.sin(yawRadians) + obstacle_y * math.cos(yawRadians))
+        rospy.loginfo(rospy.get_caller_id() + "Rotated values--> X: %f Y: %f" , rotated_x, rotated_y)
+        obstacle_x = rotated_x
+        obstacle_y = rotated_y
+
         # Subtract the origin of the costmap from the obstacle position, normalize for grid offset
         obstacle_x = obstacle_x - self.costmap_msg.info.origin.position.x
         obstacle_y = obstacle_y - self.costmap_msg.info.origin.position.y
         rospy.loginfo(rospy.get_caller_id() + "Normalized --> X: %f Y: %f" , obstacle_x, obstacle_y)
+
 
         # Convert into costmap index
         obstacle_x = int(obstacle_x / self.map_world_size * self.map_size)
         obstacle_y = int(obstacle_y / self.map_world_size * self.map_size)
         rospy.loginfo(rospy.get_caller_id() + "Indexed --> X: %d Y: %d" , obstacle_x, obstacle_y)
 
-        # Apply rotation to the obstacle position
-        rotated_x =(int) (obstacle_x * math.cos(self.transform_offset_yaw) - obstacle_y * math.sin(self.transform_offset_yaw))
-        rotated_y =(int) (obstacle_x * math.sin(self.transform_offset_yaw) + obstacle_y * math.cos(self.transform_offset_yaw))
-        rospy.loginfo(rospy.get_caller_id() + "Transformed values--> X: %d Y: %d" , rotated_x, rotated_y)
 
-        #test
-        #------------------
-        self.transform_offset_yaw += 1
-        if(self.transform_offset_yaw > 360):
-            self.transform_offset_yaw = 0
-        #------------------
-        rospy.loginfo(rospy.get_caller_id() + "Yaw -->%d" , self.transform_offset_yaw)
+
+        # # Apply rotation to the obstacle position
+        # rotated_x = int(obstacle_x * math.cos(self.transform_offset_yaw) - obstacle_y * math.sin(self.transform_offset_yaw))
+        # rotated_y = int(obstacle_x * math.sin(self.transform_offset_yaw) + obstacle_y * math.cos(self.transform_offset_yaw))
+        # rospy.loginfo(rospy.get_caller_id() + "Rotated values--> X: %d Y: %d" , rotated_x, rotated_y)
+
 
         #Fake dimensions
         obstacle_w = 10
         obstacle_h = 6
 
-        for y in range(rotated_y - obstacle_h / 2, rotated_y + obstacle_h / 2):
-            for x in range(rotated_x - obstacle_w / 2, rotated_x + obstacle_w / 2):
+        for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
+            for x in range(obstacle_x - obstacle_w / 2, obstacle_x + obstacle_w / 2):
                 #rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
                 if 0 <= x < self.costmap_msg.info.width and 0 <= y < self.costmap_msg.info.height:
                     index = y * self.costmap_msg.info.width + x
