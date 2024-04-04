@@ -97,7 +97,7 @@ class Obstacle_watch:
         # self.transform_offset_yaw += 10
         # if(self.transform_offset_yaw > 360):
         #     self.transform_offset_yaw = 0
-        # yawRadians = math.radians(self.transform_offset_yaw)
+        yawRadians = math.radians(self.transform_offset_yaw)
         #------------------
 
         #get the obstacle location in centimetres, change to metres
