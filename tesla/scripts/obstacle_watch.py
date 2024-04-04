@@ -9,7 +9,9 @@ from tf.transformations import euler_from_quaternion
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
 from tesla.msg import obstacleData
-
+import tf2_ros
+import tf2_msgs
+import geometry_msgs.msg
 
 class Obstacle_watch:
     def __init__(self):
@@ -22,6 +24,8 @@ class Obstacle_watch:
         self.sub_obstacle = rospy.Subscriber("our_obstacles", obstacleData, self.obstacle_callback)
         self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
         
+        self.robot_origin_sub = rospy.Subscriber("/tf", tf2_msgs.msg.TFMessage, self.robot_origin_callback)
+
         self.modified_costmap = None
         
         self.map_size = 100
@@ -69,11 +73,11 @@ class Obstacle_watch:
         self.modified_costmap = local_costmap
         # Update the origin of the costmap based on the local costmap's origin
         # This will translate the whole map as the robot moves 
-        self.costmap_msg.info.origin = local_costmap.info.origin
-        rospy.loginfo(rospy.get_caller_id() + "Updated Costmap Origin--> X: %d Y: %d", 
-                      self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
-        self.costmap_msg.info.origin.position.x += self.transform_offset.x
-        self.costmap_msg.info.origin.position.y += self.transform_offset.y
+        # self.costmap_msg.info.origin = local_costmap.info.origin
+        # rospy.loginfo(rospy.get_caller_id() + "Updated Costmap Origin--> X: %d Y: %d", 
+        #               self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
+        # self.costmap_msg.info.origin.position.x += self.transform_offset.x
+        # self.costmap_msg.info.origin.position.y += self.transform_offset.y
         
         # Extract rotation from the local costmap's orientation
         quaternion = (
@@ -159,7 +163,13 @@ class Obstacle_watch:
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
         print('Done.')
 
+    def robot_origin_callback(self, msg):
 
+        for transform in msg.transforms:
+            if transform.child_frame_id == "base_footprint":
+                self.costmap_msg.info.origin.position.x = transform.transform.translation.x
+                self.costmap_msg.info.origin.position.y = transform.transform.translation.y
+        
     # Calculate grid coordinates of obstacle position
     # Update occupancy values in costmap to mark cells as occupied
     # Modify self.modified_costmap, and publish
