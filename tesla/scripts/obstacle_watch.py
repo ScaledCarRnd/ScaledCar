@@ -161,7 +161,7 @@ class Obstacle_watch:
         for transform in msg.transforms:
             quaternion = transform.transform.rotation
             rotation_angle = 2 * math.atan2(quaternion.z, quaternion.w)
-            rospy.loginfo("{} Rotation Angle: {}".format(rospy.get_caller_id(), rotation_angle))
+            rospy.loginfo("{} Rotation Angle: Z:{} W:{}".format(rospy.get_caller_id(), quaternion.z, quaternion.w))
             if transform.child_frame_id == "base_footprint":
                 self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
                 self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
@@ -174,6 +174,7 @@ class Obstacle_watch:
                 )
                 _, _, yaw = euler_from_quaternion(quaternion)
                 rospy.loginfo("{} Base Footprint Yaw: {}".format(rospy.get_caller_id(), yaw))
+                rospy.loginfo("{} Base Footprint: Z:{} W:{}".format(rospy.get_caller_id(), quaternion.z, quaternion.w))
                 rospy.loginfo("{} Base Footprint Angle: {}".format(rospy.get_caller_id(), rotation_angle))
                 self.transform_offset_yaw = rotation_angle
         
