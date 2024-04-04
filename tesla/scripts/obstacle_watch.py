@@ -163,7 +163,12 @@ class Obstacle_watch:
                 self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
                 self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
 
-                quaternion = transform.transform.quaternion
+                quaternion = (
+                transform.transform.rotation.x,
+                transform.transform.rotation.y,
+                transform.transform.rotation.z,
+                transform.transform.rotation.w
+                )
                 _, _, yaw = euler_from_quaternion(quaternion)
                 self.transform_offset_yaw = yaw
         
