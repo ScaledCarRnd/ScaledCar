@@ -80,14 +80,7 @@ class Obstacle_watch:
         # self.costmap_msg.info.origin.position.y += self.transform_offset.y
         
         # Extract rotation from the local costmap's orientation
-        quaternion = (
-            local_costmap.info.origin.orientation.x,
-            local_costmap.info.origin.orientation.y,
-            local_costmap.info.origin.orientation.z,
-            local_costmap.info.origin.orientation.w
-        )
-        _, _, yaw = euler_from_quaternion(quaternion)
-        self.transform_offset_yaw = yaw
+
 
 
     def obstacle_callback(self, msg):
@@ -167,8 +160,12 @@ class Obstacle_watch:
 
         for transform in msg.transforms:
             if transform.child_frame_id == "base_footprint":
-                self.costmap_msg.info.origin.position.x = transform.transform.translation.x
-                self.costmap_msg.info.origin.position.y = transform.transform.translation.y
+                self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
+                self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
+
+                quaternion = transform.transform.quaternion
+                _, _, yaw = euler_from_quaternion(quaternion)
+                self.transform_offset_yaw = yaw
         
     # Calculate grid coordinates of obstacle position
     # Update occupancy values in costmap to mark cells as occupied
