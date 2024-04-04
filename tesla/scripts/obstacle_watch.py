@@ -72,6 +72,8 @@ class Obstacle_watch:
         self.costmap_msg.info.origin = local_costmap.info.origin
         rospy.loginfo(rospy.get_caller_id() + "Updated Costmap Origin--> X: %d Y: %d", 
                       self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
+        self.costmap_msg.info.origin.position.x += self.transform_offset.x
+        self.costmap_msg.info.origin.position.y += self.transform_offset.y
         
         # Extract rotation from the local costmap's orientation
         quaternion = (
@@ -92,10 +94,10 @@ class Obstacle_watch:
         #test
         #------------------
         #rotate about the origin
-        self.transform_offset_yaw += 10
-        if(self.transform_offset_yaw > 360):
-            self.transform_offset_yaw = 0
-        yawRadians = math.radians(self.transform_offset_yaw)
+        # self.transform_offset_yaw += 10
+        # if(self.transform_offset_yaw > 360):
+        #     self.transform_offset_yaw = 0
+        # yawRadians = math.radians(self.transform_offset_yaw)
         #------------------
 
         #get the obstacle location in centimetres, change to metres
