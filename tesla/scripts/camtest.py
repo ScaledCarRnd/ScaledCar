@@ -5,6 +5,7 @@ import sys
 import argparse
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput, Log
+from tesla.msg import obstacleData
 
 class Camtest:
     def __init__(self):
@@ -13,6 +14,8 @@ class Camtest:
         print('Cam_Test node is online')
 
         #Do Stuff
+	# Attatch to Publish to 'our_obstacle'
+
 	# parse the command line
 	parser = argparse.ArgumentParser(description="Locate objects in a live camera stream using an object detection DNN.", 
 		                         formatter_class=argparse.RawTextHelpFormatter, 
@@ -61,6 +64,15 @@ class Camtest:
 
 	    for detection in detections:
 		print(detection)
+		# Build the data struct
+	
+		# If you want an example, go to tesla/src/talker.cpp
+		
+		# Publish:
+		# x = distance in cm infront
+		# y = distance in cm left or right, 0 = centre
+		# Probably ignore Z
+		# w/h width and height of the bounding box
 
 	    # render the image
 	    output.Render(img)
