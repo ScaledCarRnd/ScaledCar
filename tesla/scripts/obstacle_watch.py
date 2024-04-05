@@ -157,9 +157,11 @@ class Obstacle_watch:
         print('Done.')
 
     def robot_origin_callback(self, msg):
-
+        i = 0
         for transform in msg.transforms:
+            i += 1
             if transform.child_frame_id == "base_footprint":
+                print(i + "Base_footprint here")
                 self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
                 self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
                 rospy.loginfo("{} Base Footprint: X: {} Y: {}".format(rospy.get_caller_id(), transform.transform.translation.x, transform.transform.translation.y))
