@@ -9,9 +9,7 @@ from tf.transformations import euler_from_quaternion
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
 from tesla.msg import obstacleData
-import tf2_ros
 import tf2_msgs
-import geometry_msgs.msg
 
 class Obstacle_watch:
     def __init__(self):
@@ -157,24 +155,17 @@ class Obstacle_watch:
         print('Done.')
 
     def robot_origin_callback(self, msg):
-        i = 0
         for transform in msg.transforms:
-            i += 1
             if transform.child_frame_id == "base_footprint":
-                print(i + "Base_footprint here")
                 self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
                 self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
-                rospy.loginfo("{} Base Footprint: X: {} Y: {}".format(rospy.get_caller_id(), transform.transform.translation.x, transform.transform.translation.y))
 
-                quaternion = (
-                transform.transform.rotation.x,
-                transform.transform.rotation.y,
-                transform.transform.rotation.z,
-                transform.transform.rotation.w
-                )
-                _, _, yaw = euler_from_quaternion(quaternion)
-                rospy.loginfo("{} Base Footprint Yaw: {}".format(rospy.get_caller_id(), yaw))
-                rospy.loginfo("{} Base Footprint: Z: {} W: {}".format(rospy.get_caller_id(), transform.transform.rotation.z, transform.transform.rotation.w))
+		z = transform.transform.rotation.z
+		w = transform.transform.rotation.w
+
+    		yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
+		print("Yaw ", yaw)
+                
         
     # Calculate grid coordinates of obstacle position
     # Update occupancy values in costmap to mark cells as occupied
