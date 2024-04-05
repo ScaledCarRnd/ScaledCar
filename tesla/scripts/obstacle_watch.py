@@ -159,10 +159,10 @@ class Obstacle_watch:
     def robot_origin_callback(self, msg):
 
         for transform in msg.transforms:
-            quaternion = transform.transform.rotation
             if transform.child_frame_id == "base_footprint":
                 self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
                 self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
+                rospy.loginfo("{} Base Footprint: X: {} Y: {}".format(rospy.get_caller_id(), transform.transform.translation.x, transform.transform.translation.y))
 
                 quaternion = (
                 transform.transform.rotation.x,
