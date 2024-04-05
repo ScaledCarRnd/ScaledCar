@@ -159,11 +159,11 @@ class Obstacle_watch:
                 self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
                 self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
 
-		z = transform.transform.rotation.z
-		w = transform.transform.rotation.w
+                z = transform.transform.rotation.z
+                w = transform.transform.rotation.w
 
-    		self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
-		print("Yaw ", self.transform_offset_yaw)
+                self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
+                print("Yaw ", self.transform_offset_yaw)
                 
         
     # Calculate grid coordinates of obstacle position
