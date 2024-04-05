@@ -4,7 +4,7 @@
 
   <node pkg="jetracer" type="jetracer" name="jetracer"  output="screen" respawn="true">
     <param name="port_name" value="/dev/ttyACM0"/>
-    <param name="linear_correction" value="1.0"/>
+    <param name="linear_correction" value="1.188"/>
     <param name="coefficient_a" value="-0.016073"/>
     <param name="coefficient_b" value="0.176183"/>
     <param name="coefficient_c" value="-23.428084"/>
