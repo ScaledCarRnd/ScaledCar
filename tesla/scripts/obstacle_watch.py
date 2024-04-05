@@ -92,7 +92,6 @@ class Obstacle_watch:
         # self.transform_offset_yaw += 10
         # if(self.transform_offset_yaw > 360):
         #     self.transform_offset_yaw = 0
-        yawRadians = math.radians(self.transform_offset_yaw)
         #------------------
 
         #get the obstacle location in centimetres, change to metres
@@ -139,7 +138,7 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(yawRadians)
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
 
         # Rotate the entire costmap array
         rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
@@ -163,8 +162,8 @@ class Obstacle_watch:
 		z = transform.transform.rotation.z
 		w = transform.transform.rotation.w
 
-    		yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
-		print("Yaw ", yaw)
+    		self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
+		print("Yaw ", self.transform_offset_yaw)
                 
         
     # Calculate grid coordinates of obstacle position
