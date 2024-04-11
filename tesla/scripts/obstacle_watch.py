@@ -9,7 +9,7 @@ from tf.transformations import euler_from_quaternion
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
 from tesla.msg import obstacleData
-
+import tf2_msgs
 
 class Obstacle_watch:
     def __init__(self):
@@ -22,6 +22,8 @@ class Obstacle_watch:
         self.sub_obstacle = rospy.Subscriber("our_obstacles", obstacleData, self.obstacle_callback)
         self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
         
+        self.robot_origin_sub = rospy.Subscriber("/tf", tf2_msgs.msg.TFMessage, self.robot_origin_callback)
+
         self.modified_costmap = None
         
         self.map_size = 100
@@ -69,19 +71,14 @@ class Obstacle_watch:
         self.modified_costmap = local_costmap
         # Update the origin of the costmap based on the local costmap's origin
         # This will translate the whole map as the robot moves 
-        self.costmap_msg.info.origin = local_costmap.info.origin
-        rospy.loginfo(rospy.get_caller_id() + "Updated Costmap Origin--> X: %d Y: %d", 
-                      self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
+        # self.costmap_msg.info.origin = local_costmap.info.origin
+        # rospy.loginfo(rospy.get_caller_id() + "Updated Costmap Origin--> X: %d Y: %d", 
+        #               self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
+        # self.costmap_msg.info.origin.position.x += self.transform_offset.x
+        # self.costmap_msg.info.origin.position.y += self.transform_offset.y
         
         # Extract rotation from the local costmap's orientation
-        quaternion = (
-            local_costmap.info.origin.orientation.x,
-            local_costmap.info.origin.orientation.y,
-            local_costmap.info.origin.orientation.z,
-            local_costmap.info.origin.orientation.w
-        )
-        _, _, yaw = euler_from_quaternion(quaternion)
-        self.transform_offset_yaw = yaw
+
 
 
     def obstacle_callback(self, msg):
@@ -92,10 +89,9 @@ class Obstacle_watch:
         #test
         #------------------
         #rotate about the origin
-        self.transform_offset_yaw += 10
-        if(self.transform_offset_yaw > 360):
-            self.transform_offset_yaw = 0
-        yawRadians = math.radians(self.transform_offset_yaw)
+        # self.transform_offset_yaw += 10
+        # if(self.transform_offset_yaw > 360):
+        #     self.transform_offset_yaw = 0
         #------------------
 
         #get the obstacle location in centimetres, change to metres
@@ -142,7 +138,7 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(yawRadians)
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
 
         # Rotate the entire costmap array
         rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
@@ -157,7 +153,19 @@ class Obstacle_watch:
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
         print('Done.')
 
+    def robot_origin_callback(self, msg):
+        for transform in msg.transforms:
+            if transform.child_frame_id == "base_footprint":
+                self.costmap_msg.info.origin.position.x = transform.transform.translation.x + self.transform_offset.x
+                self.costmap_msg.info.origin.position.y = transform.transform.translation.y + self.transform_offset.y
 
+                z = transform.transform.rotation.z
+                w = transform.transform.rotation.w
+
+                self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
+                print("Yaw ", self.transform_offset_yaw)
+                
+        
     # Calculate grid coordinates of obstacle position
     # Update occupancy values in costmap to mark cells as occupied
     # Modify self.modified_costmap, and publish
