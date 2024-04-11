@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="tesla" type="listener" name="Subscriber">
-    </node>
+    <include file="$(find jetracer)/launch/slam_nav.launch" />
+    <include file="$(find jetracer)/launch/view_nav.launch" />
+
+    <node pkg="tesla" type="obstacle_watch.py" name="obstacle_watch" output="screen"/>
     <node pkg="tesla" type="talker" name="Publisher">
     </node>
+
 </launch>

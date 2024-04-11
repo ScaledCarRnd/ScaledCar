@@ -43,7 +43,7 @@ int main(int argc, char **argv)
    * buffer up before throwing some away.
    */
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-  ros::Publisher obstacle_pub = n.advertise<tesla::obstacleData>("obstacles", 10, true);
+  ros::Publisher obstacle_pub = n.advertise<tesla::obstacleData>("our_obstacles", 1, false);
 
   ros::Rate loop_rate(TICKS_PER_SECOND);
 
@@ -59,11 +59,11 @@ int main(int argc, char **argv)
      */
     std_msgs::String msg;
 
-    std::stringstream ss;
-    ss << "hello world " << count;
-    msg.data = ss.str();
+    // std::stringstream ss;
+    // ss << "hello world " << count;
+    // msg.data = ss.str();
 
-    ROS_INFO("%s", msg.data.c_str());
+    // ROS_INFO("%s", msg.data.c_str());
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -78,9 +78,10 @@ int main(int argc, char **argv)
     {
       tesla::obstacleData obData;
       obData.strData = "An Obstacle";
-      obData.x = count;
-      obData.y = 15;
-      obData.z = -5;
+      obData.x = 0;
+      obData.y = 200;
+      obData.z = 0;
+      obData.id = count;
 
       // Publish an obstacle
       obstacle_pub.publish(obData);

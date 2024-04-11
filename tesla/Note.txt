@@ -1,0 +1,12 @@
+Requesting the map...
+[ INFO] [1712288092.930355158]: Resizing static layer to 1984 X 1984 at 0.050000 m/pix
+[ INFO] [1712288093.068679478]: Received a 1984 X 1984 map at 0.050000 m/pix
+
+global_costmap: Using plugin "obstacle_layer"
+
+GST_ARGUS: Running with following settings:
+   Camera index = 0 
+   Camera mode  = 5 
+   Output Stream W = 1280 H = 720 
+   seconds to Run    = 0 
+   Frame Rate = 120.000005 
