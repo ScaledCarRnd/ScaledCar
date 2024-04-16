@@ -13,13 +13,12 @@ class Camtest:
         rospy.init_node('Cam_Test')
         print('Cam_Test node is online')
 
-        #Do Stuff
-	# Attatch to Publish to 'our_obstacle'
+        # Do Stuff
+        # Attach to Publish to 'our_obstacle'
 
-	# parse the command line
-	parser = argparse.ArgumentParser(description="Locate objects in a live camera stream using an object detection DNN.", 
-		                         formatter_class=argparse.RawTextHelpFormatter, 
-		                         epilog=detectNet.Usage() + videoSource.Usage() + videoOutput.Usage() + Log.Usage())
+        # parse the command line
+        parser = argparse.ArgumentParser(description="Locate objects in a live camera stream using an object detection DNN.", 
+                                         formatter_class=argparse.RawTextHelpFormatter, epilog=detectNet.Usage() + videoSource.Usage() + videoOutput.Usage() + Log.Usage())
 
         parser.add_argument("input", type=str, default="csi://0", nargs='?', help="URI of the input stream")
         parser.add_argument("output", type=str, default="", nargs='?', help="URI of the output stream")
@@ -43,7 +42,6 @@ class Camtest:
         # net = detectNet(args.network, sys.argv, args.threshold)
 
         # note: to hard-code the paths to load a model, the following API can be used:
-        #
         net = detectNet(model="../../../../Documents/jetson-inference/python/training/detection/ssd/models/obstacle/ssd-mobilenet.onnx", labels="../../../../Documents/jetson-inference/python/training/detection/ssd/models/obstacle/labels.txt", 
                     input_blob="input_0", output_cvg="scores", output_bbox="boxes", 
                     threshold=args.threshold)
@@ -62,17 +60,17 @@ class Camtest:
             # print the detections
             print("detected {:d} objects in image".format(len(detections)))
 
-	    for detection in detections:
-		print(detection)
-		# Build the data struct
-	
-		# If you want an example, go to tesla/src/talker.cpp
-		
-		# Publish:
-		# x = distance in cm infront
-		# y = distance in cm left or right, 0 = centre
-		# Probably ignore Z
-		# w/h width and height of the bounding box
+            for detection in detections:
+                print(detection)
+                # Build the data struct
+    
+                # If you want an example, go to tesla/src/talker.cpp
+                
+                # Publish:
+                # x = distance in cm infront
+                # y = distance in cm left or right, 0 = centre
+                # Probably ignore Z
+                # w/h width and height of the bounding box
 
             # render the image
             output.Render(img)
