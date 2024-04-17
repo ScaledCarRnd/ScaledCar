@@ -15,7 +15,7 @@ class Camtest:
 
         # Do Stuff
         # Attach to Publish to 'our_obstacle'
-        self.costmap_pub = rospy.Publisher('our_obstacle', obstacleData, queue_size=1)
+        self.obstacle_pub = rospy.Publisher('our_obstacle', obstacleData, queue_size=1)
 
         # parse the command line
         parser = argparse.ArgumentParser(description="Locate objects in a live camera stream using an object detection DNN.", 
@@ -89,7 +89,8 @@ class Camtest:
                 ob.right = detection.Right
                 ob.top =  detection.Top
                 ob.bottom = detection.Bottom
-    
+
+                self.obstacle_pub.publish(ob)
                 # If you want an example, go to tesla/src/talker.cpp
                 
                 # Publish:
