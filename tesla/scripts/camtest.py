@@ -73,7 +73,7 @@ class Camtest:
                 # class 0 is not_obstacle, class 1 is obstacle
                 if detection.ClassID == 1:
                     # find the calculate the co-ordinates of the box.
-                    half_width = detection.Width() * 0.5
+                    half_width = detection.Width * 0.5
 
                     botpix = detection.Bottom
                     bl_coord = botpix - half_width
