@@ -1,0 +1,24 @@
+These are y-axis pixel co-ordinates. So that means they are from 0 to 720 pixels since the image is 1280 x 720
+The x-axis pixel co-ordinates are below the corresponding y-axis co-ords.
+
+392 - 10cm
+	0-245 = 10cm
+	245-705 = 20cm
+	705-1155 = 30cm
+	1155-1280 = 34cm
+207 -20cm
+	0-120 = 10cm
+	120-290 = 20cm
+	290-540 = 30cm
+	540-840 = 40cm
+	840-1110 = 50cm
+	1110-1280 = 60cm
+121 - 30cm
+	camera measurement illegible. Must Tape.
+72 - 40cm
+
+40 - 50cm
+
+22 - 60cm
+
+All measurements are from the Bumper 
