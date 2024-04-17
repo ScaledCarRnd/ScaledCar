@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Inlcude nav.launch -->
+	<include file="$(find jetracer)/launch/nav.launch" group="navigation"/>
+
+	<!-- Inlcude slam_nav.launch -->
+	<include file="$(find jetracer)/launch/slam_nav.launch" group="slam_navigation"/>
+
+	<!-- Inlcude view_nav.launch -->
+	<include file="$(find jetracer)/launch/view_nav.launch" group="view_nav"/>
+</launch>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Inlcude run_camera.launch -->
+	<include file="$(find jetracer)/launch/run_camera.launch"/>
+
+	<!-- Inlcude run_nav.launch -->
+	<include file="$(find jetracer)/launch/run_nav.launch"/>
+</launch>
+

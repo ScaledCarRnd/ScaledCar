@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+	<group ns="camera">
+		<!-- Inlcude csi_camera.launch -->
+		<include file="$(find jetracer)/launch/csi_camera.launch"/>
+
+		<!-- Inlcude cv_video.launch -->
+		<include file="$(find jetracer)/launch/cv_video.launch"/>
+	</group>
+</launch>
+
