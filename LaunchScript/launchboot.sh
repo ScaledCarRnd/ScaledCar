@@ -21,7 +21,7 @@ display_menu() {
 run_option() {
     case $1 in
         # 1) roslaunch package_name launch_file_1.launch;;
-	1) roslaunch jetracer run_camnav.launch;;
+	    1) roslaunch jetracer run_camnav.launch;;
         2) roslaunch package_name launch_file_2.launch;;
         3) python3 /home/jetson/Desktop/LaunchScript/hello_world.py;;
         4) echo " Exiting..."; exit;;
