@@ -1,0 +1,15 @@
+These are x-axis pixel co-ordinates. So that means they are from 0 to 720 pixels since the image is 1280 x 720
+
+392 - 10cm
+
+207 -20cm
+
+121 - 30cm
+
+72 - 40cm
+
+40 - 50cm
+
+22 - 60cm
+
+All measurements are from the Bumper 

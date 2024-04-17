@@ -15,6 +15,7 @@ class Camtest:
 
         # Do Stuff
         # Attach to Publish to 'our_obstacle'
+        self.costmap_pub = rospy.Publisher('our_obstacle', obstacleData, queue_size=1)
 
         # parse the command line
         parser = argparse.ArgumentParser(description="Locate objects in a live camera stream using an object detection DNN.", 
@@ -63,6 +64,31 @@ class Camtest:
             for detection in detections:
                 print(detection)
                 # Build the data struct
+                # The coordinates for the bounding box is in pixels 
+                # The Camera is flipped.
+                # create obstacle data custom struct
+                ob = obstacleData
+
+                # Class ID is the label of the class.
+                # class 0 is not_obstacle, class 1 is obstacle
+                if detection.ClassID == 1:
+                    # find the calculate the co-ordinates of the box.
+                    half_width = detection.Width() * 0.5
+
+                    botpix = detection.Bottom
+                    bl_coord = botpix - half_width
+                    br_coord = botpix + half_width
+
+                    toppix = detection.Top
+                    tl_coord = toppix - half_width
+                    tl_coord = toppix + half_width
+                else:
+                    break
+
+                ob.left = detection.Left
+                ob.right = detection.Right
+                ob.top =  detection.Top
+                ob.bottom = detection.Bottom
     
                 # If you want an example, go to tesla/src/talker.cpp
                 
