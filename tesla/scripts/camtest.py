@@ -8,6 +8,16 @@ from jetson_utils import videoSource, videoOutput, Log
 from tesla.msg import obstacleData
 
 class Camtest:
+    # A Function to find and return the width in cm
+    # bl = bottomleft, br = bottomright
+    def widthFinder(bl, br):
+
+        # work on bl first
+        if bl <= 245:
+            # ppc = pixels per centimeter. A rough calculation so no floats
+            ppc = 245/10
+            245 - bl 
+
     def __init__(self):
         # Initialize node
         rospy.init_node('Cam_Test')
@@ -72,16 +82,31 @@ class Camtest:
                 # Class ID is the label of the class.
                 # class 0 is not_obstacle, class 1 is obstacle
                 if detection.ClassID == 1:
-                    # find the calculate the co-ordinates of the box.
+                    # Take the bottom pixel and judge how close the obstacle is in cm
+                    # find the calculate the bottom co-ordinates of the box.
                     half_width = detection.Width() * 0.5
 
                     botpix = detection.Bottom
                     bl_coord = botpix - half_width
                     br_coord = botpix + half_width
 
-                    toppix = detection.Top
-                    tl_coord = toppix - half_width
-                    tl_coord = toppix + half_width
+                    # 392 is the 10 cm mark
+                    if botpix <= 392:
+                        # Find the rough width in cm
+                        if bl_coord <  
+                    # 207 is the 20 cm mark
+                    else if botpix > 392 and botpix <= 207:
+
+                    # 121 is the 30 cm mark
+                    else if botpix > 207 and botpix <= 121:
+
+                    #72 is the 40cm mark
+                    else if botpix > 121 and botpix <= 72:
+                
+                    else if 
+
+
+                    
                 else:
                     break
 
@@ -115,6 +140,7 @@ class Camtest:
     def cancel(self):
         print('Closing Node')
 
+    
 
 if __name__ == '__main__':
     Camtest()
