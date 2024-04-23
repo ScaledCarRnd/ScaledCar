@@ -35,7 +35,7 @@ class Camtest:
             sys.exit(0)
 
         # create video sources and outputs
-        input = videoSource(args.input, argv=sys.argv)
+        input = videoSource("csi://0")
         output = videoOutput(args.output, argv=sys.argv)
             
         # load the object detection network
