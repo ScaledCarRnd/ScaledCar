@@ -95,8 +95,8 @@ class Obstacle_watch:
         #------------------
 
         #get the obstacle location in centimetres, change to metres
-        obstacle_x = msg.x / 100.0
-        obstacle_y = msg.y / 100.0
+        obstacle_x = (msg.top_right - msg.top_left) / 100.0
+        obstacle_y = (msg.top_right - msg.bot_right) / 100.0
 
 
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
