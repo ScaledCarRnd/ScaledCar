@@ -46,9 +46,11 @@ class Camtest:
         net = detectNet(model="../../../../Documents/jetson-inference/python/training/detection/ssd/models/obstacle/ssd-mobilenet.onnx", labels="../../../../Documents/jetson-inference/python/training/detection/ssd/models/obstacle/labels.txt", 
                     input_blob="input_0", output_cvg="scores", output_bbox="boxes", 
                     threshold=args.threshold)
+        
+        rate = rospy.Rate(1) # 1 image per second
 
         # process frames until EOS or the user exits
-        while True:
+        while not rospy.is_shutdown():
             # capture the next image
             img = input.Capture()
 
@@ -111,6 +113,7 @@ class Camtest:
             # exit on input/output EOS
             if not input.IsStreaming() or not output.IsStreaming():
                 break
+            rate.sleep() # Sleep between frames
 
         # Destructor
     def cancel(self):
