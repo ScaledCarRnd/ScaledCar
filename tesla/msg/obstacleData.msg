@@ -3,5 +3,7 @@ float top_left
 float top_right
 float bot_left
 float bot_right
-float w
-float h
+float width_pixels
+float height_pixel
+float distance_from_bumper
+float width_cm

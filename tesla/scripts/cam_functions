@@ -1,0 +1,12 @@
+# A script with all the functions in side. This is for ease of testing.
+
+# A Function to find and return the width in cm
+# bl = bottomleft, br = bottomright
+def widthFinder(bl, br):
+    # work on bl first
+    if bl <= 245 and br <= 245:
+        return 10
+            
+
+# Function to calculate the distance given the number of pixels
+# def distanceFinder():

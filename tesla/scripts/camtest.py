@@ -6,17 +6,9 @@ import argparse
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput, Log
 from tesla.msg import obstacleData
+from cam_functions import *
 
-class Camtest:
-    # A Function to find and return the width in cm
-    # bl = bottomleft, br = bottomright
-    def widthFinder(bl, br):
-
-        # work on bl first
-        if bl <= 245:
-            # ppc = pixels per centimeter. A rough calculation so no floats
-            ppc = 245/10
-            245 - bl 
+class Camtest:    
 
     def __init__(self):
         # Initialize node
@@ -81,34 +73,34 @@ class Camtest:
 
                 # Class ID is the label of the class.
                 # class 0 is not_obstacle, class 1 is obstacle
-                if detection.ClassID == 1:
-                    # Take the bottom pixel and judge how close the obstacle is in cm
-                    # find the calculate the bottom co-ordinates of the box.
-                    half_width = detection.Width() * 0.5
+                # if detection.ClassID == 1:
+                #     # Take the bottom pixel and judge how close the obstacle is in cm
+                #     # find the calculate the bottom co-ordinates of the box.
+                #     half_width = detection.Width() * 0.5
 
-                    botpix = detection.Bottom
-                    bl_coord = botpix - half_width
-                    br_coord = botpix + half_width
+                #     botpix = detection.Bottom
+                #     bl_coord = botpix - half_width
+                #     br_coord = botpix + half_width
 
-                    # 392 is the 10 cm mark
-                    if botpix <= 392:
-                        # Find the rough width in cm
-                        if bl_coord <  
-                    # 207 is the 20 cm mark
-                    else if botpix > 392 and botpix <= 207:
+                #     # 392 is the 10 cm mark
+                #     if botpix <= 392:
+                #         # Find the rough width in cm
+                #         if bl_coord <  
+                #     # 207 is the 20 cm mark
+                #     else if botpix > 392 and botpix <= 207:
 
-                    # 121 is the 30 cm mark
-                    else if botpix > 207 and botpix <= 121:
+                #     # 121 is the 30 cm mark
+                #     else if botpix > 207 and botpix <= 121:
 
-                    #72 is the 40cm mark
-                    else if botpix > 121 and botpix <= 72:
+                #     #72 is the 40cm mark
+                #     else if botpix > 121 and botpix <= 72:
                 
-                    else if 
+                #     else if 
 
 
                     
-                else:
-                    break
+                # else:
+                #     break
 
                 ob.left = detection.Left
                 ob.right = detection.Right
