@@ -163,7 +163,7 @@ class Obstacle_watch:
                 w = transform.transform.rotation.w
 
                 self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
-                print("Yaw ", self.transform_offset_yaw)
+                #print("Yaw ", self.transform_offset_yaw)
                 
         
     # Calculate grid coordinates of obstacle position
