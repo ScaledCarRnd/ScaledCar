@@ -51,6 +51,8 @@ class Camtest:
 
         # process frames until EOS or the user exits
         while not rospy.is_shutdown():
+            rate.sleep() # Sleep between frames
+
             # capture the next image
             img = input.Capture()
 
@@ -113,7 +115,6 @@ class Camtest:
             # exit on input/output EOS
             if not input.IsStreaming() or not output.IsStreaming():
                 break
-            rate.sleep() # Sleep between frames
 
         # Destructor
     def cancel(self):
