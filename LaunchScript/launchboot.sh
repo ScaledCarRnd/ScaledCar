@@ -25,10 +25,12 @@ display_menu() {
 # Function to run selected option
 run_option() {
     case $1 in
+
         # gnome-terminal opens each choice in a new terminal
 	1) gnome-terminal -- roslaunch $CAMNAV_LAUNCH;;
         2) gnome-terminal -- roslaunch $NAVMAP_LAUNCH;;
         3) gnome-terminal -- python3 $HELLO_WORLD_PY;;
+
         4) echo " Exiting..."; exit;;
         *) echo " Invalid option";;
     esac
@@ -38,7 +40,9 @@ run_option() {
 main() {
     while true; do
         display_menu
+
         read -rp " Enter your choice: " choice
+
         if [[ ! $choice =~ ^[1-4]$ ]]; then
             echo "Invalid option. Please enter a number between 1 and 4."
         else
