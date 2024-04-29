@@ -6,8 +6,10 @@ import argparse
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput, Log
 from tesla.msg import obstacleData
+from camfunctions import widthFinder, distanceFinder
 
-class Camtest:
+class Camtest:    
+
     def __init__(self):
         # Initialize node
         rospy.init_node('Cam_Test')
@@ -15,6 +17,7 @@ class Camtest:
 
         # Do Stuff
         # Attach to Publish to 'our_obstacle'
+
         self.obstacle_pub = rospy.Publisher("our_obstacles", obstacleData, queue_size=1)
 
         # parse the command line
@@ -71,39 +74,30 @@ class Camtest:
                 # The coordinates for the bounding box is in pixels 
                 # The Camera is flipped.
                 # create obstacle data custom struct
+
                 ob = obstacleData()
 
                 # Class ID is the label of the class.
                 # class 0 is not_obstacle, class 1 is obstacle
                 if detection.ClassID == 1:
+
+                    # Take the bottom pixel and judge how close the obstacle is in cm
+                    # find the calculate the bottom co-ordinates of the box.
+
                     # find the calculate the co-ordinates of the box.
                     half_width = detection.Width * 0.5
+
 
                     botpix = detection.Bottom
                     bl_coord = botpix - half_width
                     br_coord = botpix + half_width
 
-                    toppix = detection.Top
-                    tl_coord = toppix - half_width
-                    tl_coord = toppix + half_width
-                else:
-                    break
+                    widthCM = widthFinder(bl_coord, br_coord)
+                    distanceCM = distanceFinder(botpix)
+                    
+                    #Ship it!
 
-                ob.bot_left = detection.Left
-                ob.top_left = detection.Left
-                ob.bot_right = detection.Right
-                ob.top_right = detection.Right
-                ob.w = 5
-                ob.h = 5
 
-                self.obstacle_pub.publish(ob)
-                # If you want an example, go to tesla/src/talker.cpp
-                
-                # Publish:
-                # x = distance in cm infront
-                # y = distance in cm left or right, 0 = centre
-                # Probably ignore Z
-                # w/h width and height of the bounding box
 
             # render the image
             output.Render(img)
@@ -122,6 +116,7 @@ class Camtest:
     def cancel(self):
         print('Closing Node')
 
+    
 
 if __name__ == '__main__':
     Camtest()
