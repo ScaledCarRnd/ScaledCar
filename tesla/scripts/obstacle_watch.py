@@ -95,8 +95,8 @@ class Obstacle_watch:
         #------------------
 
         #get the obstacle location in centimetres, change to metres
-        obstacle_x = msg.x / 100.0
-        obstacle_y = msg.y / 100.0
+        obstacle_x = (msg.top_right - msg.top_left) / 100.0
+        obstacle_y = (msg.top_right - msg.bot_right) / 100.0
 
 
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
@@ -163,7 +163,7 @@ class Obstacle_watch:
                 w = transform.transform.rotation.w
 
                 self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
-                print("Yaw ", self.transform_offset_yaw)
+                #print("Yaw ", self.transform_offset_yaw)
                 
         
     # Calculate grid coordinates of obstacle position
