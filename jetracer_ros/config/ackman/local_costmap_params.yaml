@@ -13,3 +13,4 @@ local_costmap:
   plugins:
    - {name: static_layer,        type: "costmap_2d::StaticLayer"}
    - {name: obstacle_layer,      type: "costmap_2d::ObstacleLayer"}
+   - {name: our_obstacles,       type: "tesla::our_obstacles"}

@@ -78,8 +78,8 @@ int main(int argc, char **argv)
     {
       tesla::obstacleData obData;
       obData.classification = 1;
-      obData.w = 0;
-      obData.h = 200;
+      // obData.w = 0;
+      // obData.h = 200;
       
 
       // Publish an obstacle

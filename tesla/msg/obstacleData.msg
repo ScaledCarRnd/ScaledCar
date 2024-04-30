@@ -1,11 +1,11 @@
 
-int32 class
-float top_left
-float top_right
-float bot_left
-float bot_right
-float width_pixels
-float height_pixel
-float distance_from_bumper
-float width_cm
+int32 classification
+float32 top_left
+float32 top_right
+float32 bot_left
+float32 bot_right
+float32 width_pixels
+float32 height_pixel
+float32 distance_from_bumper
+float32 width_cm
 

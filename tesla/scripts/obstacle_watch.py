@@ -20,9 +20,11 @@ class Obstacle_watch:
         self.costmap_sub = rospy.Subscriber('/move_base/local_costmap/costmap', OccupancyGrid, self.local_costmap_callback)
         #self.costmap_pub = rospy.Publisher('/modified_costmap', OccupancyGrid, queue_size=10)
         self.sub_obstacle = rospy.Subscriber("our_obstacles", obstacleData, self.obstacle_callback)
-        self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
-        
         self.robot_origin_sub = rospy.Subscriber("/tf", tf2_msgs.msg.TFMessage, self.robot_origin_callback)
+        
+        self.costmap_pub = rospy.Publisher('obstalce', OccupancyGrid, queue_size=10)
+        #self.costmap_pub = rospy.Publisher('/move_base/global_costmap/costmap', OccupancyGrid, queue_size=10)
+        #self.costmap_pub = rospy.Publisher('/move_base/local_costmap/costmap', OccupancyGrid, queue_size=10)
 
         self.modified_costmap = None
         
@@ -82,21 +84,14 @@ class Obstacle_watch:
 
 
     def obstacle_callback(self, msg):
+        msg = obstacleData(msg)
         print('Obstacle callback')
         #reset array
         self.costmap_msg.data = [0] * len(self.costmap_msg.data)
 
-        #test
-        #------------------
-        #rotate about the origin
-        # self.transform_offset_yaw += 10
-        # if(self.transform_offset_yaw > 360):
-        #     self.transform_offset_yaw = 0
-        #------------------
-
         #get the obstacle location in centimetres, change to metres
-        obstacle_x = (msg.top_right - msg.top_left) / 100.0
-        obstacle_y = (msg.top_right - msg.bot_right) / 100.0
+        obstacle_x = (msg.bot_right - msg.bot_left) / 100.0
+        obstacle_y = msg.distance_from_bumper / 100.0
 
 
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
@@ -122,8 +117,8 @@ class Obstacle_watch:
         # rospy.loginfo(rospy.get_caller_id() + "Rotated values--> X: %d Y: %d" , rotated_x, rotated_y)
 
 
-        #Fake dimensions
-        obstacle_w = 10
+        # Dimensions
+        obstacle_w = msg.width_cm / 100
         obstacle_h = 6
 
         for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
@@ -138,7 +133,7 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw) + 90
 
         # Rotate the entire costmap array
         rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
@@ -149,6 +144,7 @@ class Obstacle_watch:
         # Update the costmap message data
         self.costmap_msg.data = rotated_costmap_data    
 
+        # self.costmap_msg.header.frame_id = 'map'
         self.costmap_msg.header.stamp = rospy.Time.now()  # Update timestamp
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
         print('Done.')

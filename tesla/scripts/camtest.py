@@ -95,7 +95,15 @@ class Camtest:
                     widthCM = widthFinder(bl_coord, br_coord)
                     distanceCM = distanceFinder(botpix)
                     
+                    #Build it!
+                    ob.bot_left = bl_coord
+                    ob.bot_right = br_coord
+                    ob.classification = detection.ClassID
+                    ob.distance_from_bumper = distanceCM
+                    ob.width_cm = widthCM
+                    
                     #Ship it!
+                    self.obstacle_pub.publish(ob)
 
 
 
