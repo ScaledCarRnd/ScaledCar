@@ -84,7 +84,7 @@ class Obstacle_watch:
 
 
     def obstacle_callback(self, msg):
-        msg = obstacleData(msg)
+        #msg = obstacleData(msg)
         print('Obstacle callback')
         #reset array
         self.costmap_msg.data = [0] * len(self.costmap_msg.data)
