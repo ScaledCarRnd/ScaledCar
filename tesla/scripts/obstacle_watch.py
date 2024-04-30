@@ -118,7 +118,7 @@ class Obstacle_watch:
 
 
         # Dimensions
-        obstacle_w = msg.width_cm / 100
+        obstacle_w = int(msg.width_cm / 100)
         obstacle_h = 6
 
         for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
