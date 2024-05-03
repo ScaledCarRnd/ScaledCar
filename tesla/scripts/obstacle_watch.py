@@ -90,10 +90,11 @@ class Obstacle_watch:
         self.costmap_msg.data = [0] * len(self.costmap_msg.data)
 
         #get the obstacle location in centimetres, change to metres
-        obstacle_x = (msg.bot_right - msg.bot_left) / 100.0
+        obstacle_x = 0 # straight ahead
         obstacle_y = msg.distance_from_bumper / 100.0
 
 
+        rospy.loginfo(rospy.get_caller_id() + "Ob Val--> Dist: %d Widt: %d" , obstacle_y, msg.width_cm / 100)
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
         rospy.loginfo(rospy.get_caller_id() + "Original values--> X: %f Y: %f" , obstacle_x, obstacle_y)
         
@@ -118,8 +119,8 @@ class Obstacle_watch:
 
 
         # Dimensions
-        obstacle_w = int(msg.width_cm / 10)
-        obstacle_h = 6
+        obstacle_w = msg.width_cm / 100
+        obstacle_h = 4
 
         for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
             for x in range(obstacle_x - obstacle_w / 2, obstacle_x + obstacle_w / 2):
@@ -133,7 +134,7 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw) + 90
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
 
         # Rotate the entire costmap array
         rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)

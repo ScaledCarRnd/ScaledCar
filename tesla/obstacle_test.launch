@@ -9,7 +9,7 @@
 	<include file="$(find jetracer)/launch/move_base.launch"/>
 
 	<!-- Start the GUI -->
-    <include file="$(find jetracer)/launch/view_nav.launch" />
+  <include file="$(find jetracer)/launch/view_nav.launch" />
 
 	<!-- Start the obstacle detection -->
     <node pkg="tesla" type="obstacle_watch.py" name="obstacle_watch" output="screen"/>
