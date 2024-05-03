@@ -91,10 +91,10 @@ class Obstacle_watch:
 
         #get the obstacle location in centimetres, change to metres
         obstacle_x = 0 # straight ahead
-        obstacle_y = msg.distance_from_bumper / 100.0
+        obstacle_y = msg.distance_from_bumper
 
 
-        rospy.loginfo(rospy.get_caller_id() + "Ob Val--> Dist: %d Widt: %d" , obstacle_y, msg.width_cm / 100)
+        rospy.loginfo(rospy.get_caller_id() + "Ob Val--> Dist: %d Widt: %d" , obstacle_y, msg.width_cm)
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
         rospy.loginfo(rospy.get_caller_id() + "Original values--> X: %f Y: %f" , obstacle_x, obstacle_y)
         
@@ -119,7 +119,7 @@ class Obstacle_watch:
 
 
         # Dimensions
-        obstacle_w = msg.width_cm / 100
+        obstacle_w = (int)(msg.width_cm / 100)
         obstacle_h = 4
 
         for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
