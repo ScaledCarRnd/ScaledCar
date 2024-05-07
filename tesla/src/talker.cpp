@@ -77,11 +77,10 @@ int main(int argc, char **argv)
     if(count % 5 == 0)
     {
       tesla::obstacleData obData;
-      obData.strData = "An Obstacle";
-      obData.x = 0;
-      obData.y = 200;
-      obData.z = 0;
-      obData.id = count;
+      obData.classification = 1;
+      obData.w = 0;
+      obData.h = 200;
+      
 
       // Publish an obstacle
       obstacle_pub.publish(obData);

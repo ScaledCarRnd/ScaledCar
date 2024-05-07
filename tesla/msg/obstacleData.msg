@@ -1,3 +1,4 @@
+
 int32 class
 float top_left
 float top_right
@@ -7,3 +8,4 @@ float width_pixels
 float height_pixel
 float distance_from_bumper
 float width_cm
+

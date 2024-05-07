@@ -17,7 +17,8 @@ class Camtest:
 
         # Do Stuff
         # Attach to Publish to 'our_obstacle'
-        self.costmap_pub = rospy.Publisher('our_obstacle', obstacleData, queue_size=1)
+
+        self.obstacle_pub = rospy.Publisher("our_obstacles", obstacleData, queue_size=1)
 
         # parse the command line
         parser = argparse.ArgumentParser(description="Locate objects in a live camera stream using an object detection DNN.", 
@@ -37,7 +38,7 @@ class Camtest:
             sys.exit(0)
 
         # create video sources and outputs
-        input = videoSource(args.input, argv=sys.argv)
+        input = videoSource("csi://0")
         output = videoOutput(args.output, argv=sys.argv)
             
         # load the object detection network
@@ -48,9 +49,13 @@ class Camtest:
         net = detectNet(model="../../../../Documents/jetson-inference/python/training/detection/ssd/models/obstacle/ssd-mobilenet.onnx", labels="../../../../Documents/jetson-inference/python/training/detection/ssd/models/obstacle/labels.txt", 
                     input_blob="input_0", output_cvg="scores", output_bbox="boxes", 
                     threshold=args.threshold)
+        
+        rate = rospy.Rate(1) # 1 image per second
 
         # process frames until EOS or the user exits
-        while True:
+        while not rospy.is_shutdown():
+            rate.sleep() # Sleep between frames
+
             # capture the next image
             img = input.Capture()
 
@@ -69,14 +74,19 @@ class Camtest:
                 # The coordinates for the bounding box is in pixels 
                 # The Camera is flipped.
                 # create obstacle data custom struct
-                ob = obstacleData
+
+                ob = obstacleData()
 
                 # Class ID is the label of the class.
                 # class 0 is not_obstacle, class 1 is obstacle
                 if detection.ClassID == 1:
+
                     # Take the bottom pixel and judge how close the obstacle is in cm
                     # find the calculate the bottom co-ordinates of the box.
-                    half_width = detection.Width() * 0.5
+
+                    # find the calculate the co-ordinates of the box.
+                    half_width = detection.Width * 0.5
+
 
                     botpix = detection.Bottom
                     bl_coord = botpix - half_width
@@ -84,6 +94,9 @@ class Camtest:
 
                     widthCM = widthFinder(bl_coord, br_coord)
                     distanceCM = distanceFinder(botpix)
+                    
+                    #Ship it!
+
 
 
             # render the image
