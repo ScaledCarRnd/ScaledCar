@@ -1,0 +1,9 @@
+jetson@nano-4gb-jp451:~/catkin_ws/src/test$ ./test_launchboot.sh
+test_launch_option1
+/home/jetson/catkin_ws/src/test/shunit2/shunit2: line 1113: test_launch_option1: command not found
+shunit2:ERROR test_launch_option1() returned non-zero return code.
+
+Ran 1 test.
+
+FAILED (failures=0)
+

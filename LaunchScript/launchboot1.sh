@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Open script in a new terminal window
+# gnome-terminal -- /home/jetson/catkin_ws/src/LaunchScript/launchboot.sh
+
 # Source ROS setup file
 source /home/jetson/catkin_ws/devel/setup.bash
 
@@ -18,6 +21,7 @@ LAUNCHED_PROCESS_PID=""
 
 # Function to display menu
 display_menu() {
+    # gnome-terminal & #Hopefully fixes the systemd launch file
     clear
     echo
     echo " ------------------------"
@@ -27,17 +31,21 @@ display_menu() {
     echo "  Please input the following numerical choices (1-3)"
     echo "  1. AUT Live Day (Recommended)"
     echo "  2. *BETA* Obstacle Detection Version with Camera"
+    # echo "  3. Launch demo Python Script"
     echo "  3. Exit"
     echo
 }
+# For this display_menu function I guess we could launch important automonous launch files and visual display stuff individually?
 
-# Function to run selected options
+
+# Function to run selected option
 run_option() {
     case $1 in
+
         # gnome-terminal opens each choice in a new terminal
-	1) gnome-terminal -- bash -c "roslaunch $LIVEDAY_LAUNCH" & LAUNCHED_PROCESS_PID=$!;;
-	#This has a 10 second delay to not overload the system 
+	1) gnome-terminal -- bash -c "roslaunch $LIVEDAY_LAUNCH 2>/home/jetson/Desktop/error.txt" & LAUNCHED_PROCESS_PID=$!;;
         2) gnome-terminal -- bash -c "roslaunch $OBSTACLE_TEST_LAUNCH" && sleep 10 && gnome-terminal -- bash -c "rosrun $CAMTEST_PY" & LAUNCHED_PROCESS_PID=$!;;
+        # 3) gnome-terminal -- python3 $HELLO_WORLD_PY & LAUNCHED_PROCESS_PID=$!;;
         3) echo " Exiting..."; exit;;
         *) echo " Invalid option";;
     esac
@@ -78,4 +86,4 @@ main() {
 }
 
 # Call the main function
-main
+#main
