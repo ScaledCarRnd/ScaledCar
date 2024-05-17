@@ -139,7 +139,7 @@ class Obstacle_watch:
         rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
 
         # Rotate the entire costmap array
-        rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
+        rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False) +180
 
         # Flatten the rotated costmap array back to a 1D list
         rotated_costmap_data = rotated_costmap_array.flatten().tolist()
