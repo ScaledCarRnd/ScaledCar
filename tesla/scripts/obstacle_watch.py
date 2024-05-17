@@ -84,7 +84,7 @@ class Obstacle_watch:
 
 
     def obstacle_callback(self, msg):
-        #msg = obstacleData(msg)
+       #msg = obstacleData(msg)
         print('Obstacle callback')
         #reset array
         self.costmap_msg.data = [0] * len(self.costmap_msg.data)
@@ -119,12 +119,13 @@ class Obstacle_watch:
 
 
         # Dimensions
-        obstacle_w = (int)(msg.width_cm / 100)
+        obstacle_w = (int)(msg.width_cm / 10)
         obstacle_h = 4
 
+        rospy.loginfo("HERE: X%d Y%d W%d H%d", obstacle_x, obstacle_y, obstacle_w, obstacle_h) 
         for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
             for x in range(obstacle_x - obstacle_w / 2, obstacle_x + obstacle_w / 2):
-                #rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
+                rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
                 if 0 <= x < self.costmap_msg.info.width and 0 <= y < self.costmap_msg.info.height:
                     index = y * self.costmap_msg.info.width + x
                     self.costmap_msg.data[index] = 100  # Set occupancy value to 100 for occupied cells
@@ -159,7 +160,7 @@ class Obstacle_watch:
                 z = transform.transform.rotation.z
                 w = transform.transform.rotation.w
 
-                self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2))
+                self.transform_offset_yaw = math.atan2(2*(w*z), 1 - 2*(z**2)) +270
                 #print("Yaw ", self.transform_offset_yaw)
                 
         
