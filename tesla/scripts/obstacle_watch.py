@@ -136,10 +136,10 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw) +180
 
         # Rotate the entire costmap array
-        rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False) +180
+        rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
 
         # Flatten the rotated costmap array back to a 1D list
         rotated_costmap_data = rotated_costmap_array.flatten().tolist()
