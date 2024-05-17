@@ -61,7 +61,9 @@ class Obstacle_watch:
         # Main Loop
         rate = rospy.Rate(1) # hz
         while not rospy.is_shutdown():
-            
+            #send empty grid to clear persistance
+            self.costmap_msg.data = [0] * len(self.costmap_msg.data)
+            self.costmap_pub.publish(self.costmap_msg)
             rate.sleep()
 
     # Destructor
@@ -86,8 +88,6 @@ class Obstacle_watch:
     def obstacle_callback(self, msg):
         #msg = obstacleData(msg)
         print('Obstacle callback')
-        #reset array
-        self.costmap_msg.data = [0] * len(self.costmap_msg.data)
 
         #get the obstacle location in centimetres, change to metres
         obstacle_x = 0 # straight ahead
@@ -136,7 +136,7 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw) +90
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
 
         # Rotate the entire costmap array
         rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
