@@ -119,6 +119,8 @@ class Obstacle_watch:
 
 
         # Dimensions
+        obstacle_x = 50
+        obstacle_y = 50
         obstacle_w = (int)(msg.width_cm / 100)
         obstacle_h = 4
 
@@ -134,7 +136,7 @@ class Obstacle_watch:
         costmap_array = np.array(self.costmap_msg.data).reshape((self.costmap_msg.info.height, self.costmap_msg.info.width))
 
         # Calculate the rotation angle in degrees from the yaw angle
-        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw)
+        rotation_angle_degrees = math.degrees(0 - self.transform_offset_yaw) +90
 
         # Rotate the entire costmap array
         rotated_costmap_array = rotate(costmap_array, rotation_angle_degrees, order = 0, reshape = False)
@@ -150,6 +152,7 @@ class Obstacle_watch:
         self.costmap_pub.publish(self.costmap_msg)  # Publish the costmap message
         print('Done.')
 
+    # Update position and rotation whenever the base_footprint moves
     def robot_origin_callback(self, msg):
         for transform in msg.transforms:
             if transform.child_frame_id == "base_footprint":
@@ -163,21 +166,5 @@ class Obstacle_watch:
                 #print("Yaw ", self.transform_offset_yaw)
                 
         
-    # Calculate grid coordinates of obstacle position
-    # Update occupancy values in costmap to mark cells as occupied
-    # Modify self.modified_costmap, and publish
-    # def update_costmap(self, obstacle_position):
-        
-    #     grid_x = int((obstacle_position.x - self.modified_costmap.info.origin.position.x) / self.modified_costmap.info.resolution)
-    #     grid_y = int((obstacle_position.y - self.modified_costmap.info.origin.position.y) / self.modified_costmap.info.resolution)
-
-    #     if 0 <= grid_x < self.modified_costmap.info.width and 0 <= grid_y < self.modified_costmap.info.height:
-    #         index = grid_y * self.modified_costmap.info.width + grid_x
-    #         self.modified_costmap.data[index] = 100  # Set occupancy value to 100 for occupied cells
-
-    #     # Publish modified costmap
-    #     self.costmap_pub.publish(self.modified_costmap)
-    #     rospy.loginfo(rospy.get_caller_id() + " Published costmap to modified_costmap")
-
 if __name__ == '__main__':
     Obstacle_watch()
