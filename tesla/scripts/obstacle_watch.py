@@ -92,8 +92,11 @@ class Obstacle_watch:
         #get the obstacle location in centimetres, change to metres
         obstacle_x = 0 # straight ahead
         obstacle_y = msg.distance_from_bumper
-
-
+        if msg.width_cm is not None:
+            obstacle_w = int(msg.width_cm)
+        else:
+            obstacle_w = 20
+    
         rospy.loginfo(rospy.get_caller_id() + "Ob Val--> Dist: %d Widt: %d" , obstacle_y, msg.width_cm)
         rospy.loginfo(rospy.get_caller_id() + "Costmap Origin--> X: %d Y: %d" , self.costmap_msg.info.origin.position.x, self.costmap_msg.info.origin.position.y)
         rospy.loginfo(rospy.get_caller_id() + "Original values--> X: %f Y: %f" , obstacle_x, obstacle_y)
@@ -103,11 +106,16 @@ class Obstacle_watch:
         obstacle_x = obstacle_x - self.costmap_msg.info.origin.position.x
         obstacle_y = obstacle_y - self.costmap_msg.info.origin.position.y
         rospy.loginfo(rospy.get_caller_id() + "Normalized --> X: %f Y: %f" , obstacle_x, obstacle_y)
+    
+        #cm to m, eg 5cm becomes 0.05 metres
+        obstacle_y = min(float (obstacle_y) / 100, 0.2) #clamp min distance
+        obstacle_w = min(float (obstacle_w) / 100, 0.2) #clamp min width
 
-
+        #0.1m per cell
         # Convert into costmap index
-        obstacle_x = int(obstacle_x / self.map_world_size * self.map_size)
-        obstacle_y = int(obstacle_y / self.map_world_size * self.map_size)
+        obstacle_x = 50 - int(obstacle_x / self.worl_distance_per_cell) #center index + offset 
+        obstacle_y = 50 - int(obstacle_y / self.worl_distance_per_cell)
+        obstacle_w = int(obstacle_w / self.worl_distance_per_cell)
         rospy.loginfo(rospy.get_caller_id() + "Indexed --> X: %d Y: %d" , obstacle_x, obstacle_y)
 
 
@@ -119,11 +127,8 @@ class Obstacle_watch:
 
 
         # Dimensions
-        obstacle_x = 0
-        obstacle_y = 50
-        obstacle_w = (int)(msg.width_cm)
         obstacle_h = 4
-
+        rospy.loginfo("Calculated: Y%d w%d", obstacle_y, obstacle_w)
         for y in range(obstacle_y - obstacle_h / 2, obstacle_y + obstacle_h / 2):
             for x in range(obstacle_x - obstacle_w / 2, obstacle_x + obstacle_w / 2):
                 #rospy.loginfo(rospy.get_caller_id() + "Recorded values--> X: %d Y: %d" , x, y)
