@@ -119,7 +119,7 @@ class Obstacle_watch:
 
 
         # Dimensions
-        obstacle_x = 50
+        obstacle_x = 0
         obstacle_y = 50
         obstacle_w = (int)(msg.width_cm / 100)
         obstacle_h = 4
